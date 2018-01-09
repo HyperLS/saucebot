@@ -1175,7 +1175,7 @@ class MusicBot(discord.Client):
                     commands.append("{}{}".format(self.config.command_prefix, command_name))
 
             helpmsg += ", ".join(commands)
-            helpmsg += "```\n<https://github.com/SexualRhinoceros/MusicBot/wiki/Commands-list>"
+            helpmsg += "```\n"
             helpmsg += "You can also use `{}help x` for more info about each command.".format(self.config.command_prefix)
 
             return Response(helpmsg, reply=True, delete_after=60)
@@ -2295,12 +2295,12 @@ class MusicBot(discord.Client):
         return Response("\N{DASH SYMBOL}", delete_after=20)
 
     async def cmd_restart(self, channel):
-        await self.safe_send_message(channel, "\N{WAVING HAND SIGN}")
+        await self.safe_send_message(channel, "(╯°□°）╯︵ ┻━┻")
         await self.disconnect_all_voice_clients()
         raise exceptions.RestartSignal()
 
     async def cmd_shutdown(self, channel):
-        await self.safe_send_message(channel, "\N{WAVING HAND SIGN}")
+        await self.safe_send_message(channel, "(╯°□°）╯︵ ┻━┻")
         await self.disconnect_all_voice_clients()
         raise exceptions.TerminateSignal()
 
