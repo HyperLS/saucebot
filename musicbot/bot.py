@@ -2084,7 +2084,7 @@ class MusicBot(discord.Client):
 
     async def cmd_disconnect(self, server):
         await self.disconnect_voice_client(server)
-        return Response(":hear_no_evil:", delete_after=20)
+        return Response(":dizzy_face:", delete_after=20)
 
     async def cmd_restart(self, channel):
         await self.safe_send_message(channel, "(╯°□°）╯︵ ┻━┻")
