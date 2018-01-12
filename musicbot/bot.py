@@ -2084,8 +2084,9 @@ class MusicBot(discord.Client):
 
     async def cmd_disconnect(self, server):
         await self.disconnect_voice_client(server)
+        activeplayers = sum(1 for p in self.players.values() if p.is_playing)
         if activeplayers == 0:
-            game = discord.Game(name="none")
+            game = discord.Game(name=None)
             entry = None
         return Response(":dizzy_face:", delete_after=20)
 
