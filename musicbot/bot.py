@@ -2088,6 +2088,7 @@ class MusicBot(discord.Client):
         if activeplayers == 0:
             game = discord.Game(name=None)
             entry = None
+            await self.change_status(game)
         return Response(":dizzy_face:", delete_after=20)
 
     async def cmd_restart(self, channel):
