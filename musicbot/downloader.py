@@ -20,7 +20,9 @@ ytdl_format_options = {
     'default_search': 'auto',
     'source_address': '0.0.0.0',
     'nooverwrites': True,
-    'writethumbnail': True
+    'writethumbnail': True,
+    'external-downloader': 'aria2c',
+    'external-downloader-args': '-j 16'
 }
 
 # Fuck your useless bugreports message that gets two link embeds and confuses users
