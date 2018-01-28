@@ -1970,7 +1970,7 @@ class MusicBot(discord.Client):
 
                 return await self.cmd_playnow(player, channel, author, permissions, leftover_args, e.use_url)
 
-            if position > 1:
+            if position > 0:
                 player.playlist.promote_last()
             if player.is_playing:
                 player.skip()
