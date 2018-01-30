@@ -331,6 +331,7 @@ class MusicBot(discord.Client):
 
         if server.id in self.players:
             self.players.pop(server.id).kill()
+            return Response(":dizzy_face:", delete_after=20)
 
         await self.the_voice_clients.pop(server.id).disconnect()
 
@@ -2089,7 +2090,6 @@ class MusicBot(discord.Client):
             game = discord.Game(name=None)
             entry = None
             await self.change_status(game)
-        return Response(":dizzy_face:", delete_after=20)
 
     async def cmd_restart(self, channel):
         await self.safe_send_message(channel, "(╯°□°）╯︵ ┻━┻")
