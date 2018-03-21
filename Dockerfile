@@ -9,7 +9,7 @@ RUN sudo apt-get update \
     && sudo add-apt-repository ppa:mc3man/trusty-media -y \
     && sudo apt-get update -y \
     && sudo apt-get install build-essential unzip -y \
-    && sudo apt-get install python3.5 python3.5-dev -y \
+    && sudo apt-get install python3.5 python3.5-dev -y --force-yes \
     && sudo apt-get install ffmpeg -y \
     && sudo apt-get install libopus-dev -y \
     && sudo apt-get install libffi-dev -y
