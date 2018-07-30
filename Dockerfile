@@ -1,37 +1,37 @@
-FROM ubuntu:14.04
+FROM alpine:edge
 
-#FORKED https://github.com/SexualRhinoceros/MusicBot
-MAINTAINER koyu, https://git.koyu.space/koyu/saucebot
+# Add project source
+WORKDIR /usr/src/musicbot
+COPY . ./
 
-#Install dependencies
-RUN sudo apt-get update \
-    && sudo apt-get install software-properties-common -y \
-    && sudo add-apt-repository ppa:fkrull/deadsnakes -y \
-    && sudo add-apt-repository ppa:mc3man/trusty-media -y \
-    && sudo apt-get update -y \
-    && sudo apt-get install build-essential unzip -y \
-    && sudo apt-get install python3.5 python3.5-dev -y --force-yes \
-    && sudo apt-get install ffmpeg -y \
-    && sudo apt-get install libopus-dev -y \
-    && sudo apt-get install libffi-dev -y
+# Install dependencies
+RUN apk update \
+&& apk add --no-cache \
+  ca-certificates \
+  ffmpeg \
+  opus \
+  python3 \
+\
+# Install build dependencies
+&& apk add --no-cache --virtual .build-deps \
+  gcc \
+  git \
+  libffi-dev \
+  libsodium-dev \
+  make \
+  musl-dev \
+  python3-dev \
+\
+# Install pip dependencies
+&& pip3 install --no-cache-dir -r requirements.txt \
+&& pip3 install --upgrade --force-reinstall --version websockets==4.0.1 \
+\
+# Clean up build dependencies
+&& apk del .build-deps
 
-#Install Pip
-RUN sudo apt-get install wget \
-    && wget https://bootstrap.pypa.io/get-pip.py \
-    && sudo python3.5 get-pip.py
+# Create volume for mapping the config
+VOLUME /usr/src/musicbot/config
 
-#Add musicBot
-ADD . /app
-WORKDIR /app
+ENV APP_ENV=docker
 
-#Install PIP dependencies
-RUN sudo pip install -r requirements.txt
-
-#Add volume for configuration
-#VOLUME /app/config
-#Not needed since you can mount directories as volume
-#This will also allow to clear the cache more easily since
-#it's embedded more logical in the filesystem in case the disk
-#runs full
-
-CMD python3.5 run.py
+ENTRYPOINT ["python3", "run.py"]
