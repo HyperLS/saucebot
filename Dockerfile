@@ -1,6 +1,7 @@
 FROM ubuntu:14.04
 
-MAINTAINER Sidesplitter, https://github.com/SexualRhinoceros/MusicBot
+#FORKED https://github.com/SexualRhinoceros/MusicBot
+MAINTAINER koyu, https://git.koyu.space/koyu/saucebot
 
 #Install dependencies
 RUN sudo apt-get update \
@@ -20,13 +21,17 @@ RUN sudo apt-get install wget \
     && sudo python3.5 get-pip.py
 
 #Add musicBot
-ADD . /musicBot
-WORKDIR /musicBot
+ADD . /app
+WORKDIR /app
 
 #Install PIP dependencies
 RUN sudo pip install -r requirements.txt
 
 #Add volume for configuration
-VOLUME /musicBot/config
+#VOLUME /app/config
+#Not needed since you can mount directories as volume
+#This will also allow to clear the cache more easily since
+#it's embedded more logical in the filesystem in case the disk
+#runs full
 
 CMD python3.5 run.py
