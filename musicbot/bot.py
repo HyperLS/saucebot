@@ -1977,20 +1977,6 @@ class MusicBot(discord.Client):
 
         # return Response(reply_text, delete_after=30)
 
-    async def cmd_cat(self, player, entry):
-        """
-        Usage:
-            {command_prefix}cat
-
-        Puts out a random cat.
-        (^\d+d\d+|^\d+)(\+\d+)?$
-        """
-        channel = entry.meta.get('channel', None)
-        newmsg = "CAT!! 🐱"
-        os.system("wget http://thecatapi.com/api/images/get?format=src&type=jpg -O out.jpg")
-        thumbnail = "out.jpg"
-        await self.safe_send_file(channel, newmsg, thumbnail)
-
     async def cmd_roll(self, channel, author, leftover_args):
         """
         Usage:
