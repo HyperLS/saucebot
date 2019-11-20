@@ -141,8 +141,6 @@ if not sys.version_info >= (3, 5):
     print("Please run the bot using python 3.5")
     input("Press enter to continue . . .")
 
-    return
-
 import asyncio
 
 tried_requirementstxt = False
