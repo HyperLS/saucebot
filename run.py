@@ -101,124 +101,118 @@ class PIP(object):
         except:
             pass
 
+if not sys.version_info >= (3, 5):
+    print("Python 3.5+ is required. This version is %s" % sys.version.split()[0])
+    print("Attempting to locate python 3.5...")
 
-def main():
-    if not sys.version_info >= (3, 5):
-        print("Python 3.5+ is required. This version is %s" % sys.version.split()[0])
-        print("Attempting to locate python 3.5...")
+    pycom = None
 
-        pycom = None
+    # Maybe I should check for if the current dir is the musicbot folder, just in case
 
-        # Maybe I should check for if the current dir is the musicbot folder, just in case
+    if sys.platform.startswith('win'):
+        try:
+            subprocess.check_output('py -3.5 -c "exit()"', shell=True)
+            pycom = 'py -3.5'
+        except:
 
-        if sys.platform.startswith('win'):
             try:
-                subprocess.check_output('py -3.5 -c "exit()"', shell=True)
-                pycom = 'py -3.5'
-            except:
-
-                try:
-                    subprocess.check_output('python3 -c "exit()"', shell=True)
-                    pycom = 'python3'
-                except:
-                    pass
-
-            if pycom:
-                print("Python 3 found.  Launching bot...")
-                os.system('start cmd /k %s run.py' % pycom)
-                sys.exit(0)
-
-        else:
-            try:
-                pycom = subprocess.check_output(['which', 'python3.5']).strip().decode()
+                subprocess.check_output('python3 -c "exit()"', shell=True)
+                pycom = 'python3'
             except:
                 pass
 
-            if pycom:
-                print("\nPython 3 found.  Re-launching bot using: ")
-                print("  %s run.py\n" % pycom)
+        if pycom:
+            print("Python 3 found.  Launching bot...")
+            os.system('start cmd /k %s run.py' % pycom)
+            sys.exit(0)
 
-                os.execlp(pycom, pycom, 'run.py')
-
-        print("Please run the bot using python 3.5")
-        input("Press enter to continue . . .")
-
-        return
-
-    import asyncio
-
-    tried_requirementstxt = False
-    tryagain = True
-
-    loops = 0
-    max_wait_time = 60
-
-    while tryagain:
-        # Maybe I need to try to import stuff first, then actually import stuff
-        # It'd save me a lot of pain with all that awful exception type checking
-
-        m = None
+    else:
         try:
-            from musicbot import MusicBot
-            m = MusicBot()
-            print("Connecting...", end='', flush=True)
-            m.run()
+            pycom = subprocess.check_output(['which', 'python3.5']).strip().decode()
+        except:
+            pass
 
-        except SyntaxError:
+        if pycom:
+            print("\nPython 3 found.  Re-launching bot using: ")
+            print("  %s run.py\n" % pycom)
+
+            os.execlp(pycom, pycom, 'run.py')
+
+    print("Please run the bot using python 3.5")
+    input("Press enter to continue . . .")
+
+    return
+
+import asyncio
+
+tried_requirementstxt = False
+tryagain = True
+
+loops = 0
+max_wait_time = 60
+
+while tryagain:
+    # Maybe I need to try to import stuff first, then actually import stuff
+    # It'd save me a lot of pain with all that awful exception type checking
+
+    m = None
+    try:
+        from musicbot import MusicBot
+        m = MusicBot()
+        print("Connecting...", end='', flush=True)
+        m.run()
+
+    except SyntaxError:
+        traceback.print_exc()
+        break
+
+    except ImportError as e:
+        if not tried_requirementstxt:
+            tried_requirementstxt = True
+
+            # TODO: Better output
+            print(e)
+            print("Attempting to install dependencies...")
+
+            err = PIP.run_install('--upgrade -r requirements.txt')
+
+            if err:
+                print("\nYou may need to %s to install dependencies." %
+                        ['use sudo', 'run as admin'][sys.platform.startswith('win')])
+                break
+            else:
+                print("\nOk lets hope it worked\n")
+        else:
             traceback.print_exc()
+            print("Unknown ImportError, exiting.")
             break
 
-        except ImportError as e:
-            if not tried_requirementstxt:
-                tried_requirementstxt = True
-
-                # TODO: Better output
-                print(e)
-                print("Attempting to install dependencies...")
-
-                err = PIP.run_install('--upgrade -r requirements.txt')
-
-                if err:
-                    print("\nYou may need to %s to install dependencies." %
-                          ['use sudo', 'run as admin'][sys.platform.startswith('win')])
-                    break
-                else:
-                    print("\nOk lets hope it worked\n")
-            else:
-                traceback.print_exc()
-                print("Unknown ImportError, exiting.")
+    except Exception as e:
+        if hasattr(e, '__module__') and e.__module__ == 'musicbot.exceptions':
+            if e.__class__.__name__ == 'HelpfulError':
+                print(e.message)
                 break
 
-        except Exception as e:
-            if hasattr(e, '__module__') and e.__module__ == 'musicbot.exceptions':
-                if e.__class__.__name__ == 'HelpfulError':
-                    print(e.message)
-                    break
-
-                elif e.__class__.__name__ == "TerminateSignal":
-                    break
-
-                elif e.__class__.__name__ == "RestartSignal":
-                    loops = -1
-            else:
-                traceback.print_exc()
-
-        finally:
-            if not m or not m.init_ok:
+            elif e.__class__.__name__ == "TerminateSignal":
                 break
 
-            asyncio.set_event_loop(asyncio.new_event_loop())
-            loops += 1
+            elif e.__class__.__name__ == "RestartSignal":
+                loops = -1
+        else:
+            traceback.print_exc()
 
-        print("Cleaning up... ", end='')
-        gc.collect()
-        print("Done.")
+    finally:
+        if not m or not m.init_ok:
+            break
 
-        sleeptime = min(loops * 2, max_wait_time)
-        if sleeptime:
-            print("Restarting in {} seconds...".format(loops*2))
-            time.sleep(sleeptime)
+        asyncio.set_event_loop(asyncio.new_event_loop())
+        loops += 1
 
+    print("Cleaning up... ", end='')
+    gc.collect()
+    print("Done.")
 
-if __name__ == '__main__':
-    main()
+    sleeptime = min(loops * 2, max_wait_time)
+    if sleeptime:
+        print("Restarting in {} seconds...".format(loops*2))
+        time.sleep(sleeptime)
