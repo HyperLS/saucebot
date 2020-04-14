@@ -4,6 +4,8 @@ Saucebot is the original Discord music bot written for [Python](https://www.pyth
 
 ![Main](https://i.imgur.com/EZljY52.png)
 
+[![Run on Repl.it](https://repl.it/badge/github/koyuawsmbrtn/saucebot)](https://repl.it/github/koyuawsmbrtn/saucebot)
+
 ## Setup
 Setting up the Saucebot is relatively painless - just follow one of the [guides](https://github.com/Just-Some-Bots/MusicBot/wiki) we have created for you. After that, you can begin to configure your bot to ensure that it can connect to Discord.
 
